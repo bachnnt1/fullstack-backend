@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD edit user</title>
+  </head>
+  <body>
+    <div>
+      <form action="/put-crud" method="POST">
+        <div>
+          <label>first name</label>
+          <input type="text" name="firstname" value="<%=data.firstName%>" />
+        </div>
+        <div>
+          <label>last name</label>
+          <input type="text" name="lastname" value="<%=data.lastName%>" />
+        </div>
+        <div>
+          <label>Address</label>
+          <input type="text" name="address" value="<%=data.address%>" />
+        </div>
+        <div>
+          <input type="text" hidden name="id" value="<%=data.id%>" />
+          <button type="submit">Update</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
