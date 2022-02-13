@@ -10,8 +10,11 @@ const initWebRoute = (app) => {
   router.post("/post-crud", homeController.postCRUD);
   router.post("/put-crud", homeController.putCRUD);
   router.get("/delete-crud", homeController.deleteCRUD);
-  router.post("/api/get-all-user", userController.getAllUser);
+  router.get("/api/get-all-user", userController.getAllUser);
   router.post("/api/login", userController.handleLogin);
+  router.post("/api/create-new-user", userController.handleCreateNewUser);
+  router.put("/api/edit-user", userController.handleEditNewUser);
+  router.delete("/api/delete-user", userController.handleDeleteUser);
   return app.use("/", router);
 };
 

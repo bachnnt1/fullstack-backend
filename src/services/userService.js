@@ -1,5 +1,6 @@
 import db from "../models/index";
 const bcrypt = require("bcrypt");
+const salt = bcrypt.genSaltSync(10);
 let handleUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -79,8 +80,103 @@ let getAllUser = (userId) => {
   });
 };
 
+let hashUserPassword = (password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let hashPassword = bcrypt.hashSync(password, salt);
+      resolve(hashPassword);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let createNewUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkEmail = await checkUserEmail(data.email);
+      if (checkEmail) {
+        resolve({
+          errCode: 1,
+          message: "Email already exits",
+        });
+      } else {
+        let hashPasswordFromBycrypt = await hashUserPassword(data.password);
+        await db.User.create({
+          email: data.email,
+          password: hashPasswordFromBycrypt,
+          firstName: data.firstname,
+          lastName: data.lastname,
+          address: data.address,
+          gender: data.gender === "1" ? true : false,
+          roleId: data.roleid,
+          phoneNumber: data.phonenumber,
+        });
+        resolve({
+          errCode: 0,
+          message: "Create done",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let deleteUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: { id: id },
+      });
+      if (!user) {
+        resolve({
+          errCode: 1,
+          message: "User doesn't exits",
+        });
+      }
+      await db.User.destroy({
+        where: { id: id },
+      });
+      resolve({
+        errCode: 0,
+        message: "Delete done",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let updateUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({ where: { id: data.id }, raw: false });
+      if (user) {
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.address = data.address;
+        await user.save();
+        resolve({
+          errCode: 0,
+          message: "Update done",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          message: "User not found",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   handleUserLogin,
   checkUserEmail,
   getAllUser,
+  createNewUser,
+  deleteUser,
+  updateUser,
 };
