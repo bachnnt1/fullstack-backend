@@ -4,7 +4,7 @@ import viewEngine from "./config/viewEngine";
 import initWebRoutes from "./route/web";
 import connectDB from "./config/connectDB";
 import cors from "cors";
-require("dotenv").config(); // giup chayj dc dong process.env
+require("dotenv").config(); // giúp chạy được process.env
 
 let app = express();
 
