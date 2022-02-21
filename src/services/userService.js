@@ -105,13 +105,13 @@ let createNewUser = (data) => {
         await db.User.create({
           email: data.email,
           password: hashPasswordFromBycrypt,
-          firstName: data.firstname,
-          lastName: data.lastname,
+          firstName: data.firstName,
+          lastName: data.lastName,
           address: data.address,
           gender: data.gender,
-          roleId: data.role,
+          roleId: data.roleId,
           phoneNumber: data.phoneNumber,
-          position: data.position
+          positionId: data.position
         });
         resolve({
           errCode: 0,
