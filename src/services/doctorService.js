@@ -72,8 +72,44 @@ let saveDoctor = (data) => {
   });
 };
 
+let getDetailDoctorById = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.User.findOne({
+        where: {
+          id: id,
+        },
+        attributes: {
+          exclude: ["password", "image"],
+        },
+        include: [
+          {
+            model: db.Markdown,
+            attributes: [
+              "id",
+              "contentHTML",
+              "contentMarkdown",
+              "description",
+              "doctorId",
+            ],
+          },
+        ],
+        raw: true,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        data: data,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctor,
   getAllDoctors,
   saveDoctor,
+  getDetailDoctorById,
 };

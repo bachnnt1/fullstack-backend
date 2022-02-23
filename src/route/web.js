@@ -20,6 +20,7 @@ const initWebRoute = (app) => {
   router.get("/api/get-top-doctor", doctorController.getTopDoctor);
   router.get("/api/get-all-doctor", doctorController.getAllDoctors);
   router.post("/api/save-info-doctor", doctorController.saveDoctor);
+  router.get("/api/get-detail-doctor", doctorController.getDetailDoctorById);
   return app.use("/", router);
 };
 
