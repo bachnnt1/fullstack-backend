@@ -18,6 +18,8 @@ const initWebRoute = (app) => {
   router.delete("/api/delete-user", userController.handleDeleteUser);
   router.get("/api/allcode", userController.getAllCode);
   router.get("/api/get-top-doctor", doctorController.getTopDoctor);
+  router.get("/api/get-all-doctor", doctorController.getAllDoctors);
+  router.post("/api/save-info-doctor", doctorController.saveDoctor);
   return app.use("/", router);
 };
 

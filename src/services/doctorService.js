@@ -6,19 +6,19 @@ let getTopDoctor = (limit) => {
         limit: limit,
         order: [["createdAt", "DESC"]],
         where: { roleId: "R2" },
-        atributes: {
-          exclude: ["password", "image"],
+        attributes: {
+          exclude: ["password"],
         },
         include: [
           {
             model: db.Allcode,
             as: "positionData",
-            atributes: ["valueEn", "valueVi"],
+            attributes: ["valueEn", "valueVi"],
           },
           {
             model: db.Allcode,
             as: "genderData",
-            atributes: ["valueEn", "valueVi"],
+            attributes: ["valueEn", "valueVi"],
           },
         ],
         raw: true,
@@ -34,6 +34,46 @@ let getTopDoctor = (limit) => {
   });
 };
 
+let getAllDoctors = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let doctors = await db.User.findAll({
+        where: { roleId: "R2" },
+        attributes: {
+          exclude: ["password", "image"],
+        },
+      });
+      resolve({
+        errCode: 0,
+        data: doctors,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let saveDoctor = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await db.Markdown.create({
+        contentHTML: data.contentHTML,
+        contentMarkdown: data.contentMarkdown,
+        description: data.description,
+        doctorId: data.doctorId,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctor,
+  getAllDoctors,
+  saveDoctor,
 };
