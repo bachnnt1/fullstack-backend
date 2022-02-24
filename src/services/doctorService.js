@@ -56,12 +56,27 @@ let getAllDoctors = () => {
 let saveDoctor = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await db.Markdown.create({
-        contentHTML: data.contentHTML,
-        contentMarkdown: data.contentMarkdown,
-        description: data.description,
-        doctorId: data.doctorId,
-      });
+      if (data.action) {
+        let doctorMarkdown = await db.Markdown.findOne({
+          where: { doctorId: data.doctorId },
+          raw: false,
+        });
+        if (doctorMarkdown) {
+          doctorMarkdown.contentHTML = data.contentHTML;
+          doctorMarkdown.contentMarkdown = data.contentMarkdown;
+          doctorMarkdown.description = data.description;
+          doctorMarkdown.updateAt = new Date();
+          await doctorMarkdown.save();
+        }
+      } else {
+        await db.Markdown.create({
+          contentHTML: data.contentHTML,
+          contentMarkdown: data.contentMarkdown,
+          description: data.description,
+          doctorId: data.doctorId,
+        });
+      }
+
       resolve({
         errCode: 0,
         errMessage: "Success",
