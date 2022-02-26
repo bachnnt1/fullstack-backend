@@ -171,10 +171,31 @@ let bulkCreateSchedule = (data) => {
   });
 };
 
+let getScheduleByDate = (id, date) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.Schedule.findAll({
+        where: { doctorId: id, date: date },
+      });
+      if (!data) {
+        data = [];
+      }
+      resolve({
+        errCode: 0,
+        data: data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctor,
   getAllDoctors,
   saveDoctor,
   getDetailDoctorById,
   bulkCreateSchedule,
+  getScheduleByDate,
 };
