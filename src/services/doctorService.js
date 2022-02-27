@@ -79,12 +79,39 @@ let saveDoctor = (data) => {
           doctorId: data.doctorId,
         });
       }
+      let doctorInfo = await db.Doctor_info.findOne({
+        where: { doctorId: data.doctorId },
+        raw: false,
+      });
+      if (doctorInfo) {
+        doctorInfo.doctorId = data.doctorId;
+        doctorInfo.priceId = data.selectedPrice;
+        doctorInfo.provinceId = data.selectedProvince;
+        doctorInfo.paymentId = data.selectedPayment;
+        doctorInfo.addressClinic = data.addressClinic;
+        doctorInfo.nameClinic = data.nameClinic;
+        doctorInfo.note = data.note;
+        doctorInfo.updateAt = new Date();
+        await doctorInfo.save();
+      } else {
+        await db.Doctor_info.create({
+          doctorId: data.doctorId,
+          priceId: data.contentHTML,
+          provinceId: data.contentMarkdown,
+          paymentId: data.description,
+          addressClinic: data.addressClinic,
+          nameClinic: data.nameClinic,
+          note: data.note,
+          updateAt: new Date(),
+        });
+      }
 
       resolve({
         errCode: 0,
         errMessage: "Success",
       });
     } catch (e) {
+      console.log(e);
       reject(e);
     }
   });
