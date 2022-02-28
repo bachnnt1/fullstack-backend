@@ -244,6 +244,67 @@ let getScheduleByDate = (id, date) => {
   });
 };
 
+let getProfileById = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: {
+          id: id,
+        },
+        attributes: {
+          exclude: ["password"],
+        },
+        include: [
+          {
+            model: db.Markdown,
+            attributes: ["contentHTML", "contentMarkdown", "description"],
+          },
+          {
+            model: db.Allcode,
+            as: "positionData",
+            attributes: ["id", "valueEn", "valueVi"],
+          },
+          {
+            model: db.Doctor_info,
+            attributes: {
+              exclude: ["id", "doctorId"],
+            },
+            include: [
+              {
+                model: db.Allcode,
+                as: "priceTypeData",
+                attributes: ["valueEn", "valueVi"],
+              },
+              {
+                model: db.Allcode,
+                as: "provinceTypeData",
+                attributes: ["valueEn", "valueVi"],
+              },
+              {
+                model: db.Allcode,
+                as: "paymentTypeData",
+                attributes: ["valueEn", "valueVi"],
+              },
+            ],
+          },
+        ],
+        raw: false,
+        nest: true,
+      });
+      if (user && user.image) {
+        user.image = new Buffer(user.image, "base64").toString("binary");
+      }
+      resolve({
+        errCode: 0,
+        data: user,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctor,
   getAllDoctors,
@@ -251,4 +312,5 @@ module.exports = {
   getDetailDoctorById,
   bulkCreateSchedule,
   getScheduleByDate,
+  getProfileById,
 };
