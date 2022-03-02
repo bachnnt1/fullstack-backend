@@ -7,6 +7,10 @@ let postAppointment = (data) => {
       await sendSimpleEmail({
         receiveEmail: data.email,
         patientName: data.fullName,
+        timeType:
+          data.timeDetail && data.timeDetail.timeTypeData
+            ? data.timeDetail.timeTypeData.valueVi
+            : "",
       });
       let user = await db.User.findOrCreate({
         where: { email: data.email },
@@ -56,7 +60,9 @@ let sendSimpleEmail = async (data) => {
     from: '"Bách bạo chúa" <bachcvb@gmail.com>', // sender address
     to: data.receiveEmail, // list of receivers
     subject: "Thông tin đặt lịch khám bệnh (test full stack)", // Subject line
-    html: `<b>Hello ${data.patientName}</b>`, // html body
+    html: `<b>Người đặt lịch khám: ${data.patientName}</b>
+    <p>Thời gian khám: ${data.timeType}</p>
+    `, // html body
   });
 };
 
