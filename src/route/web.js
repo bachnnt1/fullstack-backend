@@ -26,6 +26,7 @@ const initWebRoute = (app) => {
   router.get("/api/get-profile-by-id", doctorController.getProfileById);
   router.post("/api/bulk-create-schedule", doctorController.bulkCreateSchedule);
   router.post("/api/book-appointment", patientController.postAppointment);
+  router.post("/api/verify-book-appointment", patientController.postVerifyAppointment);
   return app.use("/", router);
 };
 

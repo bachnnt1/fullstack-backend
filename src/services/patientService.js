@@ -1,9 +1,15 @@
 import db from "../models/index";
 import nodemailer from "nodemailer";
 require("dotenv").config();
+import { v4 as uuidv4 } from "uuid";
+let buildUrl = (doctorId, token) => {
+  let result = `${process.env.URL_REACT}/verify-book-appointment/token=${token}&doctorId=${doctorId}`;
+  return result;
+};
 let postAppointment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let token = uuidv4();
       await sendSimpleEmail({
         receiveEmail: data.email,
         patientName: data.fullName,
@@ -11,6 +17,7 @@ let postAppointment = (data) => {
           data.timeDetail && data.timeDetail.timeTypeData
             ? data.timeDetail.timeTypeData.valueVi
             : "",
+        redirectLink: buildUrl(data.doctorId, token),
       });
       let user = await db.User.findOrCreate({
         where: { email: data.email },
@@ -30,6 +37,7 @@ let postAppointment = (data) => {
             patientId: user[0].id,
             date: data.date,
             timeType: data.timeType,
+            token: token,
           },
         });
       }
@@ -62,11 +70,39 @@ let sendSimpleEmail = async (data) => {
     subject: "Thông tin đặt lịch khám bệnh (test full stack)", // Subject line
     html: `<b>Người đặt lịch khám: ${data.patientName}</b>
     <p>Thời gian khám: ${data.timeType}</p>
+    <a href=${data.redirectLink}><p>Xác nhận</p></a>
     `, // html body
+  });
+};
+
+let postVerifyAppointment = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let appointment = await db.Booking.findOne({
+        where: {
+          doctorId: data.doctorId,
+          token: data.token,
+          statusId: "S1",
+        },
+        raw: false,
+      });
+      if (appointment) {
+        appointment.statusId = "S2";
+        await appointment.save();
+      }
+      resolve({
+        errCode: 0,
+        errMessage: "Booking done",
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
   });
 };
 
 module.exports = {
   postAppointment,
   sendSimpleEmail,
+  postVerifyAppointment,
 };
