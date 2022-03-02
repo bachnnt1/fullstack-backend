@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 require("dotenv").config();
 import { v4 as uuidv4 } from "uuid";
 let buildUrl = (doctorId, token) => {
-  let result = `${process.env.URL_REACT}/verify-book-appointment/token=${token}&doctorId=${doctorId}`;
+  let result = `${process.env.URL_REACT}/verify-book-appointment?token=${token}&doctorId=${doctorId}`;
   return result;
 };
 let postAppointment = (data) => {
@@ -89,11 +89,16 @@ let postVerifyAppointment = (data) => {
       if (appointment) {
         appointment.statusId = "S2";
         await appointment.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Booking done",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Not exits",
+        });
       }
-      resolve({
-        errCode: 0,
-        errMessage: "Booking done",
-      });
     } catch (e) {
       console.log(e);
       reject(e);
