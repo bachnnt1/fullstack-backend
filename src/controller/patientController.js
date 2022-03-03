@@ -31,7 +31,24 @@ let postVerifyAppointment = async (req, res) => {
   }
 };
 
+let createNewSpecialty = async (req, res) => {
+  try {
+    let infor = await patientService.createNewSpecialty(req.body);
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
+
 module.exports = {
   postAppointment,
   postVerifyAppointment,
+  createNewSpecialty
 };

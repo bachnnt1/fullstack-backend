@@ -106,8 +106,29 @@ let postVerifyAppointment = (data) => {
   });
 };
 
+let createNewSpecialty = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await db.Specialty.create({
+        name: data.name,
+        image: data.previewImage,
+        descriptionHTML: data.contentHTML,
+        descriptionMarkdown: data.contentMarkdown,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Create done",
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   postAppointment,
   sendSimpleEmail,
   postVerifyAppointment,
+  createNewSpecialty,
 };
