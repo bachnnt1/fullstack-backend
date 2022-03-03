@@ -92,6 +92,8 @@ let saveDoctor = (data) => {
         doctorInfo.nameClinic = data.nameClinic;
         doctorInfo.note = data.note;
         doctorInfo.updateAt = new Date();
+        doctorInfo.clinicId = data.selectedClinic;
+        doctorInfo.specialtyId = data.selectedSpecialty;
         await doctorInfo.save();
       } else {
         await db.Doctor_info.create({
@@ -103,6 +105,8 @@ let saveDoctor = (data) => {
           nameClinic: data.nameClinic,
           note: data.note,
           updateAt: new Date(),
+          clinicId: data.selectedClinic,
+          specialtyId: data.selectedSpecialty,
         });
       }
 

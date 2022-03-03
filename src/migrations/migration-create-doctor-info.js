@@ -28,6 +28,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      specialtyId: {
+        type: Sequelize.INTEGER,
+      },
+      clinicId: {
+        type: Sequelize.INTEGER,
+      },
       nameClinic: { type: Sequelize.STRING, allowNull: false },
       note: { type: Sequelize.STRING },
       count: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
