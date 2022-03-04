@@ -35,6 +35,7 @@ const initWebRoute = (app) => {
     patientController.createNewSpecialty
   );
   router.get("/api/get-all-specialty", patientController.getAllSpecialty);
+  router.get("/api/get-specialty-by-id", patientController.getSpecialById);
   return app.use("/", router);
 };
 

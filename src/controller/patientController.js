@@ -63,9 +63,29 @@ let getAllSpecialty = async (req, res) => {
   }
 };
 
+let getSpecialById = async (req, res) => {
+  try {
+    let infor = await patientService.getSpecialById(
+      req.query.id,
+      req.query.location
+    );
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
+
 module.exports = {
   postAppointment,
   postVerifyAppointment,
   createNewSpecialty,
   getAllSpecialty,
+  getSpecialById,
 };

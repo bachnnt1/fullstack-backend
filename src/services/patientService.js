@@ -147,10 +147,47 @@ let getAllSpecialty = (data) => {
   });
 };
 
+let getSpecialById = (inputId, location) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.Specialty.findOne({
+        where: { id: inputId },
+        attributes: ["name", "descriptionHTML", "descriptionMarkdown"],
+      });
+      if (data) {
+        let doctorSpecialty = [];
+        if (location === "ALL") {
+          doctorSpecialty = await db.Doctor_info.findAll({
+            where: { specialtyId: inputId },
+            attributes: ["doctorId", "provinceId"],
+          });
+        } else {
+          doctorSpecialty = await db.Doctor_info.findAll({
+            where: { specialtyId: inputId, provinceId: location },
+            attributes: ["doctorId", "provinceId"],
+          });
+        }
+        data.doctorSpecialty = doctorSpecialty;
+      } else {
+        data = {};
+      }
+
+      resolve({
+        errCode: 0,
+        data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   postAppointment,
   sendSimpleEmail,
   postVerifyAppointment,
   createNewSpecialty,
   getAllSpecialty,
+  getSpecialById,
 };
