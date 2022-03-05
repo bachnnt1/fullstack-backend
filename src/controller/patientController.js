@@ -127,6 +127,24 @@ let createNewClinic = async (req, res) => {
     });
   }
 };
+let getlistPatient = async (req, res) => {
+  try {
+    let infor = await patientService.getlistPatient(
+      req.query.doctorId,
+      req.query.date
+    );
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
 
 module.exports = {
   postAppointment,
@@ -137,4 +155,5 @@ module.exports = {
   createNewClinic,
   getAllClinic,
   getClinicById,
+  getlistPatient,
 };

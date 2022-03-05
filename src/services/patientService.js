@@ -24,6 +24,7 @@ let postAppointment = (data) => {
         defaults: {
           email: data.email,
           roleId: "R3",
+          gender: data.gender,
         },
       });
 
@@ -35,7 +36,7 @@ let postAppointment = (data) => {
             statusId: "S1",
             doctorId: data.doctorId,
             patientId: user[0].id,
-            date: data.date,
+            date: data.timeDetail ? data.timeDetail.date : 0,
             timeType: data.timeType,
             token: token,
           },
@@ -258,6 +259,32 @@ let getClinicById = (inputId) => {
   });
 };
 
+let getlistPatient = (id, date) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.Booking.findAll({
+        where: { statusId: "S2", doctorId: id, date: date },
+        include: [
+          {
+            model: db.User,
+            as: "patientData",
+            attributes: ["email", "firstName", "address", "gender"],
+          },
+        ],
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   postAppointment,
   sendSimpleEmail,
@@ -268,4 +295,5 @@ module.exports = {
   createNewClinic,
   getAllClinic,
   getClinicById,
+  getlistPatient,
 };
