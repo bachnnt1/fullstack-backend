@@ -126,10 +126,52 @@ let createNewSpecialty = (data) => {
   });
 };
 
+let createNewClinic = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await db.Clinic.create({
+        name: data.name,
+        image: data.previewImage,
+        descriptionHTML: data.contentHTML,
+        descriptionMarkdown: data.contentMarkdown,
+        address: data.address,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Create done",
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 let getAllSpecialty = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let data = await db.Specialty.findAll();
+      if (data && data.length > 0) {
+        data.map((item) => {
+          item.image = new Buffer(item.image, "base64").toString("binary");
+          return item;
+        });
+      }
+      resolve({
+        errCode: 0,
+        data: data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
+let getAllClinic = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.Clinic.findAll();
       if (data && data.length > 0) {
         data.map((item) => {
           item.image = new Buffer(item.image, "base64").toString("binary");
@@ -183,6 +225,39 @@ let getSpecialById = (inputId, location) => {
   });
 };
 
+let getClinicById = (inputId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await db.Clinic.findOne({
+        where: { id: inputId },
+        attributes: [
+          "name",
+          "address",
+          "descriptionHTML",
+          "descriptionMarkdown",
+        ],
+      });
+      if (data) {
+        let doctorClinic = [];
+        doctorClinic = await db.Doctor_info.findAll({
+          where: { clinicId: inputId },
+          attributes: ["doctorId", "provinceId"],
+        });
+        data.doctorClinic = doctorClinic;
+      } else {
+        data = {};
+      }
+      resolve({
+        errCode: 0,
+        data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   postAppointment,
   sendSimpleEmail,
@@ -190,4 +265,7 @@ module.exports = {
   createNewSpecialty,
   getAllSpecialty,
   getSpecialById,
+  createNewClinic,
+  getAllClinic,
+  getClinicById,
 };

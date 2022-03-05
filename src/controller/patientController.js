@@ -62,6 +62,21 @@ let getAllSpecialty = async (req, res) => {
     });
   }
 };
+let getAllClinic = async (req, res) => {
+  try {
+    let infor = await patientService.getAllClinic();
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
 
 let getSpecialById = async (req, res) => {
   try {
@@ -81,6 +96,37 @@ let getSpecialById = async (req, res) => {
     });
   }
 };
+let getClinicById = async (req, res) => {
+  try {
+    let infor = await patientService.getClinicById(req.query.id);
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
+
+let createNewClinic = async (req, res) => {
+  try {
+    let infor = await patientService.createNewClinic(req.body);
+    if (infor) {
+      return res.status(200).json({
+        infor,
+      });
+    }
+  } catch (e) {
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server",
+    });
+  }
+};
 
 module.exports = {
   postAppointment,
@@ -88,4 +134,7 @@ module.exports = {
   createNewSpecialty,
   getAllSpecialty,
   getSpecialById,
+  createNewClinic,
+  getAllClinic,
+  getClinicById,
 };
