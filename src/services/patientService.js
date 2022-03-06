@@ -269,6 +269,18 @@ let getlistPatient = (id, date) => {
             model: db.User,
             as: "patientData",
             attributes: ["email", "firstName", "address", "gender"],
+            include: [
+              {
+                model: db.Allcode,
+                as: "genderData",
+                attributes: ["valueEn", "valueVi"],
+              },
+            ],
+          },
+          {
+            model: db.Allcode,
+            as: "timeRefData",
+            attributes: ["valueEn", "valueVi"],
           },
         ],
         raw: false,
